@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Flutter
+flutter_app/build/
+flutter_app/.dart_tool/
+flutter_app/.gradle/
+flutter_app/.idea/
+flutter_app/.flutter-plugins
+flutter_app/.flutter-plugins-dependencies
+
+# Flutter Lock File
+flutter_app/pubspec.lock
+
+# VS Code
+.vscode/
+
+# Windows
+Thumbs.db

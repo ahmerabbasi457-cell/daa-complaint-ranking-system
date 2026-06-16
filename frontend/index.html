@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ComplaintRank — Login</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+
+  <!-- Animated background grid -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <div class="auth-container">
+    <div class="auth-brand">
+      <div class="brand-icon">⚖</div>
+      <h1 class="brand-name">ComplaintRank</h1>
+      <p class="brand-sub">Dynamic Top-K Complaint Ranking System</p>
+      <div class="brand-tags">
+        <span class="tag">Min-Heap</span>
+        <span class="tag">Time Decay</span>
+        <span class="tag">Spam Detection</span>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <!-- Tab switcher -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Login</button>
+        <button class="auth-tab" data-tab="signup">Sign Up</button>
+      </div>
+
+      <!-- Login Form -->
+      <form class="auth-form active" id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" placeholder="Enter your username" required autocomplete="username"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="Enter your password" required autocomplete="current-password"/>
+        </div>
+        <div class="form-options">
+          <label class="checkbox-label">
+            <input type="checkbox" /> Remember me
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-primary btn-full">
+          <span>Login to Dashboard</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <p class="auth-footer-note">Demo: any username & password works</p>
+      </form>
+
+      <!-- Signup Form -->
+      <form class="auth-form" id="signup-form" onsubmit="handleSignup(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="First name" required />
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Last name" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="you@example.com" required />
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" placeholder="Choose a username" required autocomplete="username"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="Create a password" required autocomplete="new-password"/>
+        </div>
+        <button type="submit" class="btn-primary btn-full">
+          <span>Create Account</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <p class="auth-disclaimer">DAA Semester Project · FAST-NUCES · 2024</p>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Console — ComplaintRank</title>
+  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ░░ SCANLINE OVERLAY ░░ -->
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- ░░ HEADER ░░ -->
+  <header class="admin-header">
+    <div class="header-left">
+      <div class="admin-logo">
+        <span class="logo-glyph">▲</span>
+        <div class="logo-text">
+          <span class="logo-title">ADMIN CONSOLE</span>
+          <span class="logo-sub">ComplaintRank · DAA Project</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="sys-title">Dynamic Top-K Complaint Ranking System</div>
+      <div class="sys-sub">Time Decay · Clustering · Spam Detection</div>
+    </div>
+
+    <div class="header-right">
+      <div class="status-cluster">
+        <div class="backend-badge" id="backend-badge">
+          <span class="badge-pulse" id="badge-pulse"></span>
+          <span id="badge-label">Connecting…</span>
+        </div>
+        <div class="refresh-info">
+          <span class="refresh-label">Auto-refresh</span>
+          <div class="refresh-ring-wrap">
+            <svg class="refresh-ring" viewBox="0 0 36 36">
+              <circle class="ring-track" cx="18" cy="18" r="15"/>
+              <circle class="ring-fill" id="ring-fill" cx="18" cy="18" r="15"/>
+            </svg>
+            <span class="refresh-count" id="refresh-count">5</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-clock" id="header-clock">--:--:--</div>
+    </div>
+  </header>
+
+  <!-- ░░ MAIN ░░ -->
+  <main class="admin-main">
+
+    <!-- ▸ SECTION A — STAT CARDS -->
+    <section class="stats-section">
+      <div class="stat-card" id="card-total">
+        <div class="stat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6M9 16h6M9 8h6M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-value" id="val-total">—</div>
+          <div class="stat-label">Total Complaints</div>
+          <div class="stat-trend" id="trend-total"></div>
+        </div>
+        <div class="stat-glow total-glow"></div>
+      </div>
+
+      <div class="stat-card" id="card-spam">
+        <div class="stat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-value" id="val-spam">—</div>
+          <div class="stat-label">Spam Detected</div>
+          <div class="stat-bar-wrap">
+            <div class="stat-bar spam-bar" id="spam-bar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="stat-glow spam-glow"></div>
+      </div>
+
+      <div class="stat-card highlight-card" id="card-top">
+        <div class="stat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-value" id="val-top">—</div>
+          <div class="stat-label">Top Ranked Score</div>
+          <div class="stat-subtitle" id="val-top-title">—</div>
+        </div>
+        <div class="stat-glow top-glow"></div>
+      </div>
+
+      <div class="stat-card" id="card-clusters">
+        <div class="stat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M9.5 17.5L12 11M14.5 17.5L12 11"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-value" id="val-clusters">—</div>
+          <div class="stat-label">Active Clusters</div>
+          <div class="stat-trend" id="trend-clusters"></div>
+        </div>
+        <div class="stat-glow cluster-glow"></div>
+      </div>
+    </section>
+
+    <!-- ▸ SECTION B — TOP-K TABLE -->
+    <section class="table-section">
+      <div class="section-head">
+        <div class="section-title-wrap">
+          <span class="section-tag">SECTION B</span>
+          <h2 class="section-title">Live Top-K Complaint Rankings</h2>
+          <p class="section-desc">Sorted by final score · Min-Heap extraction · Updated every 5s</p>
+        </div>
+        <div class="table-controls">
+          <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="table-search" class="table-search" placeholder="Filter complaints…" />
+          </div>
+          <select class="table-filter" id="table-filter-cat">
+            <option value="">All Categories</option>
+            <option value="Network">Network</option>
+            <option value="Food">Food</option>
+            <option value="Education">Education</option>
+            <option value="General">General</option>
+            <option value="Infrastructure">Infrastructure</option>
+            <option value="Safety">Safety</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Transport">Transport</option>
+            <option value="Sanitation">Sanitation</option>
+            <option value="Environment">Environment</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="complaints-table" id="complaints-table">
+          <thead>
+            <tr>
+              <th class="th-rank">Rank</th>
+              <th class="th-title">Complaint Title</th>
+              <th class="th-category">Category</th>
+              <th class="th-spam">Spam Score</th>
+              <th class="th-cluster">Cluster Weight</th>
+              <th class="th-score">Final Score</th>
+            </tr>
+          </thead>
+          <tbody id="complaints-tbody">
+            <tr class="loading-row">
+              <td colspan="6">
+                <div class="table-loading">
+                  <div class="loading-bars">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                  <span>Fetching data from backend…</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <span id="table-count-label">— complaints loaded</span>
+        <span class="table-algo-note">⬡ Min-Heap · O(n log k) · Top-K extraction</span>
+      </div>
+    </section>
+
+    <!-- ▸ BOTTOM GRID: Cluster Analytics + Algorithm Panel -->
+    <div class="bottom-grid">
+
+      <!-- ▸ SECTION C — CLUSTER ANALYTICS -->
+      <section class="cluster-section">
+        <div class="section-head">
+          <div class="section-title-wrap">
+            <span class="section-tag">SECTION C</span>
+            <h2 class="section-title">Cluster Analytics</h2>
+            <p class="section-desc">Complaint distribution across topic clusters</p>
+          </div>
+        </div>
+
+        <div class="cluster-grid" id="cluster-grid">
+          <!-- injected by JS -->
+        </div>
+
+        <div class="cluster-chart-wrap">
+          <div class="chart-label">Distribution</div>
+          <div class="chart-bars" id="chart-bars">
+            <!-- injected by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ▸ SECTION D — ALGORITHM PANEL -->
+      <section class="algo-section">
+        <div class="section-head">
+          <div class="section-title-wrap">
+            <span class="section-tag">SECTION D</span>
+            <h2 class="section-title">Algorithm Information</h2>
+            <p class="section-desc">Core techniques powering this system</p>
+          </div>
+        </div>
+
+        <div class="algo-list">
+
+          <div class="algo-item" style="--delay:0ms">
+            <div class="algo-item-left">
+              <div class="algo-icon heap-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v4M8 7l4-4 4 4M6 21h12M6 17h12M8 13h8M10 9h4"/></svg>
+              </div>
+              <div class="algo-info">
+                <div class="algo-name">Min-Heap · Top-K Optimization</div>
+                <div class="algo-detail">Priority queue maintains K highest-scored complaints. Root = minimum of Top-K — enables O(log K) insert &amp; O(1) min-access.</div>
+              </div>
+            </div>
+            <div class="algo-badge">
+              <span class="complexity-chip">O(n log k)</span>
+            </div>
+          </div>
+
+          <div class="algo-item" style="--delay:80ms">
+            <div class="algo-item-left">
+              <div class="algo-icon decay-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </div>
+              <div class="algo-info">
+                <div class="algo-name">Time Decay Ranking</div>
+                <div class="algo-detail">Score × e<sup>−λt</sup> — Older complaints decay exponentially, surfacing fresh issues dynamically without manual curation.</div>
+              </div>
+            </div>
+            <div class="algo-badge">
+              <span class="complexity-chip decay-chip">e⁻λt</span>
+            </div>
+          </div>
+
+          <div class="algo-item" style="--delay:160ms">
+            <div class="algo-item-left">
+              <div class="algo-icon spam-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+              </div>
+              <div class="algo-info">
+                <div class="algo-name">Spam Detection</div>
+                <div class="algo-detail">Text similarity via Jaccard/cosine distance flags duplicate &amp; near-duplicate complaints, preventing score inflation from coordinated spam.</div>
+              </div>
+            </div>
+            <div class="algo-badge">
+              <span class="complexity-chip spam-chip">Filter</span>
+            </div>
+          </div>
+
+          <div class="algo-item" style="--delay:240ms">
+            <div class="algo-item-left">
+              <div class="algo-icon cluster-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7 6h10M6.5 7.5l4.5 9M17.5 7.5l-4.5 9"/></svg>
+              </div>
+              <div class="algo-info">
+                <div class="algo-name">Clustering</div>
+                <div class="algo-detail">K-Means / hierarchical clustering groups related complaints into topics, enabling cluster-weighted scoring and category-level analytics.</div>
+              </div>
+            </div>
+            <div class="algo-badge">
+              <span class="complexity-chip cluster-chip">Groups</span>
+            </div>
+          </div>
+
+          <div class="algo-item" style="--delay:320ms">
+            <div class="algo-item-left">
+              <div class="algo-icon greedy-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <div class="algo-info">
+                <div class="algo-name">Greedy Approximation</div>
+                <div class="algo-detail">At each insert: if score &gt; heap root → evict min, insert new. O(log K) per operation. Proves optimal for Top-K selection without full sort.</div>
+              </div>
+            </div>
+            <div class="algo-badge">
+              <span class="complexity-chip greedy-chip">Optimal</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Complexity summary -->
+        <div class="complexity-summary">
+          <div class="cs-row">
+            <span class="cs-label">Top-K via Heap</span>
+            <span class="cs-val good">O(n log k)</span>
+          </div>
+          <div class="cs-row">
+            <span class="cs-label">vs Full Sort</span>
+            <span class="cs-val bad">O(n log n)</span>
+          </div>
+          <div class="cs-row">
+            <span class="cs-label">Space</span>
+            <span class="cs-val good">O(k)</span>
+          </div>
+          <div class="cs-row">
+            <span class="cs-label">Per-insert</span>
+            <span class="cs-val good">O(log k)</span>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+  </main>
+
+  <!-- ░░ FOOTER ░░ -->
+  <footer class="admin-footer">
+    <span>ComplaintRank Admin Console · DAA Semester Project · 2024</span>
+    <span>Backend: <code>http://127.0.0.1:5000</code> · Last fetch: <span id="last-fetch">—</span></span>
+  </footer>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

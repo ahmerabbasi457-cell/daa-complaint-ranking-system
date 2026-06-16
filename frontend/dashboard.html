@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ComplaintRank — Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-icon-sm">⚖</div>
+      <span class="sidebar-brand">ComplaintRank</span>
+      <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#submit-section" class="nav-item active" data-section="submit">
+        <span class="nav-icon">📝</span>
+        <span class="nav-label">Submit Complaint</span>
+      </a>
+      <a href="#complaints-section" class="nav-item" data-section="complaints">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Top-K Rankings</span>
+      </a>
+      <a href="#algorithm-section" class="nav-item" data-section="algorithm">
+        <span class="nav-icon">🧠</span>
+        <span class="nav-label">Algorithm Insight</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span class="user-name" id="user-name-display">User</span>
+      </div>
+      <button class="logout-btn" onclick="logout()">⏻ Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content" id="main-content">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h2 class="page-title">Dashboard</h2>
+        <span class="breadcrumb">/ Complaint Management System</span>
+      </div>
+      <div class="topbar-right">
+        <div class="status-indicator" id="backend-status">
+          <span class="status-dot"></span>
+          <span class="status-text">Connecting...</span>
+        </div>
+        <div class="topbar-time" id="topbar-time"></div>
+      </div>
+    </header>
+
+    <!-- Stats row -->
+    <section class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-info">
+          <span class="stat-value" id="stat-total">—</span>
+          <span class="stat-label">Total Complaints</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-info">
+          <span class="stat-value" id="stat-high">—</span>
+          <span class="stat-label">High Urgency</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-info">
+          <span class="stat-value" id="stat-top-score">—</span>
+          <span class="stat-label">Top Score</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🗂</div>
+        <div class="stat-info">
+          <span class="stat-value" id="stat-categories">—</span>
+          <span class="stat-label">Categories Active</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Submit Complaint Section -->
+    <section class="content-section" id="submit-section">
+      <div class="section-header">
+        <div>
+          <h3 class="section-title">Submit New Complaint</h3>
+          <p class="section-sub">Submitted complaints are scored and ranked using our Min-Heap algorithm</p>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <form id="complaint-form" onsubmit="submitComplaint(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Complaint Title <span class="required">*</span></label>
+              <input type="text" id="title" placeholder="Brief title of the issue" required maxlength="100"/>
+              <span class="char-count" id="title-count">0/100</span>
+            </div>
+            <div class="form-group">
+              <label>Category <span class="required">*</span></label>
+              <select id="category" required>
+                <option value="" disabled selected>Select category</option>
+                <option value="Infrastructure">🏗 Infrastructure</option>
+                <option value="Sanitation">🗑 Sanitation</option>
+                <option value="Safety">🛡 Safety</option>
+                <option value="Utilities">💡 Utilities</option>
+                <option value="Transport">🚌 Transport</option>
+                <option value="Environment">🌿 Environment</option>
+                <option value="Healthcare">🏥 Healthcare</option>
+                <option value="Education">📚 Education</option>
+                <option value="Other">📌 Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Description <span class="required">*</span></label>
+            <textarea id="description" placeholder="Provide a detailed description of the complaint..." required rows="4" maxlength="500"></textarea>
+            <span class="char-count" id="desc-count">0/500</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Urgency Level <span class="required">*</span></label>
+              <div class="urgency-selector">
+                <label class="urgency-option">
+                  <input type="radio" name="urgency" value="Low" required />
+                  <span class="urgency-badge low">Low</span>
+                </label>
+                <label class="urgency-option">
+                  <input type="radio" name="urgency" value="Medium" />
+                  <span class="urgency-badge medium">Medium</span>
+                </label>
+                <label class="urgency-option">
+                  <input type="radio" name="urgency" value="High" />
+                  <span class="urgency-badge high">High</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Location <span class="required">*</span></label>
+              <input type="text" id="location" placeholder="e.g. Block 5, Gulshan, Karachi" required />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="reset" class="btn-secondary" onclick="resetForm()">Clear Form</button>
+            <button type="submit" class="btn-primary" id="submit-btn">
+              <span id="submit-text">Submit Complaint</span>
+              <div class="btn-spinner hidden" id="submit-spinner"></div>
+            </button>
+          </div>
+        </form>
+
+        <!-- Success/Error toast -->
+        <div class="toast hidden" id="toast">
+          <span class="toast-icon" id="toast-icon">✓</span>
+          <span id="toast-msg">Complaint submitted successfully!</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top-K Complaints Section -->
+    <section class="content-section" id="complaints-section">
+      <div class="section-header">
+        <div>
+          <h3 class="section-title">Top-K Ranked Complaints</h3>
+          <p class="section-sub">Sorted by dynamic score using Min-Heap · Time-decayed · Spam-filtered</p>
+        </div>
+        <div class="section-actions">
+          <div class="filter-bar">
+            <select id="filter-urgency" onchange="applyFilters()">
+              <option value="">All Urgency</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <select id="filter-category" onchange="applyFilters()">
+              <option value="">All Categories</option>
+              <option value="Infrastructure">Infrastructure</option>
+              <option value="Sanitation">Sanitation</option>
+              <option value="Safety">Safety</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Transport">Transport</option>
+              <option value="Environment">Environment</option>
+              <option value="Healthcare">Healthcare</option>
+              <option value="Education">Education</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <button class="btn-refresh" id="refresh-btn" onclick="loadComplaints()">
+            <span class="refresh-icon" id="refresh-icon">↻</span>
+            Refresh Rankings
+          </button>
+        </div>
+      </div>
+
+      <!-- Rank legend -->
+      <div class="rank-legend">
+        <span class="legend-item"><span class="rank-medal gold">🥇</span> Rank 1</span>
+        <span class="legend-item"><span class="rank-medal silver">🥈</span> Rank 2</span>
+        <span class="legend-item"><span class="rank-medal bronze">🥉</span> Rank 3</span>
+        <span class="legend-sep">|</span>
+        <span class="legend-item"><span class="urgency-dot high"></span> High</span>
+        <span class="legend-item"><span class="urgency-dot medium"></span> Medium</span>
+        <span class="legend-item"><span class="urgency-dot low"></span> Low</span>
+      </div>
+
+      <div class="complaints-grid" id="complaints-grid">
+        <div class="loading-state" id="loading-state">
+          <div class="spinner"></div>
+          <p>Fetching ranked complaints...</p>
+        </div>
+      </div>
+
+      <div class="empty-state hidden" id="empty-state">
+        <div class="empty-icon">📭</div>
+        <h4>No complaints found</h4>
+        <p>Submit a complaint above or check your backend connection.</p>
+      </div>
+    </section>
+
+    <!-- Algorithm Insight Panel -->
+    <section class="content-section" id="algorithm-section">
+      <div class="section-header">
+        <div>
+          <h3 class="section-title">🧠 Algorithm Insight Panel</h3>
+          <p class="section-sub">Understanding the data structures and algorithms powering this system</p>
+        </div>
+      </div>
+
+      <div class="algo-grid">
+
+        <!-- Top-K Concept -->
+        <div class="algo-card concept-card">
+          <div class="algo-card-header">
+            <span class="algo-icon">🎯</span>
+            <h4>Top-K Problem</h4>
+          </div>
+          <p>The <strong>Top-K problem</strong> asks: given <em>N</em> elements, find the K largest (or highest-priority) elements efficiently — without sorting all N items.</p>
+          <div class="complexity-box">
+            <div class="complexity-item">
+              <span class="c-label">Naïve (Sort All)</span>
+              <span class="c-value bad">O(N log N)</span>
+            </div>
+            <div class="complexity-item">
+              <span class="c-label">Min-Heap (K fixed)</span>
+              <span class="c-value good">O(N log K)</span>
+            </div>
+            <div class="complexity-item">
+              <span class="c-label">Space Used</span>
+              <span class="c-value good">O(K)</span>
+            </div>
+          </div>
+          <p class="algo-insight">When K ≪ N, the heap approach is dramatically faster — ideal for real-time complaint queues.</p>
+        </div>
+
+        <!-- Score Formula -->
+        <div class="algo-card formula-card">
+          <div class="algo-card-header">
+            <span class="algo-icon">📐</span>
+            <h4>Score Formula</h4>
+          </div>
+          <div class="formula-display">
+            <div class="formula-main">
+              Score = (U × W<sub>u</sub> + L × W<sub>l</sub>) × e<sup>−λt</sup>
+            </div>
+          </div>
+          <div class="formula-legend">
+            <div class="var-row"><code>U</code><span>Urgency weight (High=3, Med=2, Low=1)</span></div>
+            <div class="var-row"><code>W<sub>u</sub></code><span>Urgency importance factor</span></div>
+            <div class="var-row"><code>L</code><span>Number of likes / upvotes</span></div>
+            <div class="var-row"><code>W<sub>l</sub></code><span>Like importance factor</span></div>
+            <div class="var-row"><code>λ</code><span>Decay rate constant</span></div>
+            <div class="var-row"><code>t</code><span>Time since submission (hours)</span></div>
+            <div class="var-row"><code>e<sup>−λt</sup></code><span>Exponential time decay multiplier</span></div>
+          </div>
+          <p class="algo-insight">Old complaints naturally lose score over time, ensuring fresh, relevant issues surface to the top.</p>
+        </div>
+
+        <!-- Heap vs Sort Comparison -->
+        <div class="algo-card compare-card">
+          <div class="algo-card-header">
+            <span class="algo-icon">⚔</span>
+            <h4>Min-Heap vs Sorting</h4>
+          </div>
+          <div class="compare-table">
+            <div class="compare-header">
+              <span></span>
+              <span>Min-Heap (Used)</span>
+              <span>Full Sort</span>
+            </div>
+            <div class="compare-row">
+              <span>Time Complexity</span>
+              <span class="good">O(N log K)</span>
+              <span class="bad">O(N log N)</span>
+            </div>
+            <div class="compare-row">
+              <span>Space</span>
+              <span class="good">O(K)</span>
+              <span class="bad">O(N)</span>
+            </div>
+            <div class="compare-row">
+              <span>Live Updates</span>
+              <span class="good">✔ Efficient</span>
+              <span class="bad">✘ Re-sort All</span>
+            </div>
+            <div class="compare-row">
+              <span>Insert Cost</span>
+              <span class="good">O(log K)</span>
+              <span class="bad">O(N log N)</span>
+            </div>
+            <div class="compare-row">
+              <span>Memory for 1M items, K=10</span>
+              <span class="good">~10 slots</span>
+              <span class="bad">~1M slots</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Techniques Used -->
+        <div class="algo-card techniques-card">
+          <div class="algo-card-header">
+            <span class="algo-icon">⚙</span>
+            <h4>System Techniques</h4>
+          </div>
+          <div class="technique-list">
+            <div class="technique-item">
+              <div class="technique-icon">🏔</div>
+              <div class="technique-info">
+                <strong>Min-Heap (Priority Queue)</strong>
+                <p>Maintains the Top-K complaints. The root always holds the lowest-scored item, enabling O(log K) insertion and O(1) minimum access.</p>
+              </div>
+            </div>
+            <div class="technique-item">
+              <div class="technique-icon">⏳</div>
+              <div class="technique-info">
+                <strong>Exponential Time Decay</strong>
+                <p>Score multiplied by e<sup>−λt</sup>. Recent complaints are boosted; stale complaints decay naturally — a greedy freshness heuristic.</p>
+              </div>
+            </div>
+            <div class="technique-item">
+              <div class="technique-icon">🤖</div>
+              <div class="technique-info">
+                <strong>Spam Detection (Clustering)</strong>
+                <p>Duplicate and near-duplicate complaints are detected via text similarity clustering (e.g., Jaccard / cosine similarity), preventing spam inflation.</p>
+              </div>
+            </div>
+            <div class="technique-item">
+              <div class="technique-icon">🔢</div>
+              <div class="technique-info">
+                <strong>Greedy Top-K Selection</strong>
+                <p>At each insert, greedily maintain only K elements by evicting the minimum-scored item — a classic greedy algorithm pattern.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heap Visualization -->
+        <div class="algo-card heap-vis-card">
+          <div class="algo-card-header">
+            <span class="algo-icon">🌳</span>
+            <h4>Min-Heap Structure (K=5)</h4>
+          </div>
+          <div class="heap-diagram">
+            <div class="heap-level level-0">
+              <div class="heap-node root-node" title="Root: lowest score in Top-K">
+                <span class="node-label">Min</span>
+                <span class="node-score">2.1</span>
+              </div>
+            </div>
+            <div class="heap-level level-1">
+              <div class="heap-node" title="Left child">
+                <span class="node-label">L</span>
+                <span class="node-score">4.7</span>
+              </div>
+              <div class="heap-node" title="Right child">
+                <span class="node-label">R</span>
+                <span class="node-score">5.3</span>
+              </div>
+            </div>
+            <div class="heap-level level-2">
+              <div class="heap-node leaf" title="Leaf">
+                <span class="node-score">7.2</span>
+              </div>
+              <div class="heap-node leaf" title="Leaf">
+                <span class="node-score">8.9</span>
+              </div>
+            </div>
+            <div class="heap-arrows">
+              <svg width="100%" height="60" viewBox="0 0 320 60" preserveAspectRatio="none">
+                <line x1="160" y1="5" x2="80" y2="55" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4"/>
+                <line x1="160" y1="5" x2="240" y2="55" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4"/>
+              </svg>
+            </div>
+          </div>
+          <p class="algo-insight">New complaint score &gt; root → eject root, insert new. Score ≤ root → discard. Heap property maintained via heapify-up.</p>
+        </div>
+
+        <!-- DAA Connections -->
+        <div class="algo-card daa-card">
+          <div class="algo-card-header">
+            <span class="algo-icon">🔗</span>
+            <h4>DAA Course Connections</h4>
+          </div>
+          <div class="daa-topics">
+            <div class="daa-topic">
+              <span class="topic-badge">Divide & Conquer</span>
+              <span>Heap construction via heapify</span>
+            </div>
+            <div class="daa-topic">
+              <span class="topic-badge">Greedy</span>
+              <span>Top-K selection strategy</span>
+            </div>
+            <div class="daa-topic">
+              <span class="topic-badge">Dynamic Programming</span>
+              <span>Score caching & decay precomputation</span>
+            </div>
+            <div class="daa-topic">
+              <span class="topic-badge">Graph / Clustering</span>
+              <span>Similarity-based spam detection</span>
+            </div>
+            <div class="daa-topic">
+              <span class="topic-badge">Analysis</span>
+              <span>Amortized O(N log K) total cost proof</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+      <span>ComplaintRank · DAA Semester Project · 2024</span>
+      <span>Backend: <code>localhost:5000</code></span>
+    </footer>
+
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
