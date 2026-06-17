@@ -19,6 +19,17 @@ The system consists of:
 
 ---
 
+## Project Highlights
+
+* Implemented Min Heap based Top-K complaint ranking
+* Designed dynamic scoring using likes, recency, clustering, and spam penalties
+* Built a Flask REST API backend
+* Developed responsive Web Dashboard and Admin Analytics Panel
+* Integrated Flutter mobile application with backend APIs
+* Demonstrated practical applications of Data Structures & Algorithms
+* Supports streaming complaint updates and dynamic ranking recalculation
+
+
 ## Key Features
 
 * Dynamic Top-K complaint ranking
@@ -108,6 +119,44 @@ SQLite Database
 
 ---
 
+## Screenshots
+
+### Web Dashboard
+
+![Web Dashboard](screenshots/web-dashboard.png)
+
+### Admin Dashboard
+
+![Admin Dashboard](screenshots/web-admin-dashboard.png)
+
+### Top-K Rankings
+
+![Top-K Rankings](screenshots/top-k-rankings.png)
+
+### Algorithm Insights
+
+![Algorithm Insight](screenshots/algorithm-insight-1.png)
+
+### Cluster Analytics
+
+![Cluster Analytics](screenshots/cluster-analytics.png)
+
+### Flutter Dashboard
+
+![Flutter Dashboard](screenshots/flutter-dashboard.png)
+
+### Flutter Admin Dashboard
+
+![Flutter Admin Dashboard](screenshots/flutter-admin-dashboard.png)
+
+### Flutter Submit Complaint
+
+![Flutter Submit Complaint](screenshots/flutter-submit-complaint.png)
+
+### API Response
+
+![API Response](screenshots/api-response.png)
+
 ## API Endpoints
 
 ### Submit Complaint
@@ -156,6 +205,11 @@ flutter_app/
 * Real-time WebSockets
 
 ---
+
+## Resume Summary
+
+Developed a full-stack complaint ranking platform that dynamically maintains Top-K complaints using heap-based optimization, time decay scoring, clustering, and spam detection. Built Flask REST APIs, responsive web dashboards, admin analytics, and a Flutter mobile application integrated with the same backend. Demonstrated practical implementation of Data Structures & Algorithms concepts including Min Heap optimization, streaming updates, greedy ranking, and diversity-aware complaint prioritization.
+
 
 ## Author
 
